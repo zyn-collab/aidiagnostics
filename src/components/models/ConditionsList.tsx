@@ -14,12 +14,12 @@ export function ConditionsList({ conditions }: { conditions: ModelCondition[] })
 
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-0.5 text-[14px]">
         {visible.map((condition) => (
-          <div key={condition.name} className="py-1.5 border-b border-[var(--color-border)]/40">
+          <div key={condition.name} className="py-1 border-b border-[var(--color-border)]/30">
             <span className="font-medium text-[var(--color-text)]">{condition.name}</span>
             {condition.description && (
-              <span className="text-[var(--color-text-secondary)]"> — {condition.description}</span>
+              <span className="text-[12px] text-[var(--color-text-secondary)]"> — {condition.description}</span>
             )}
           </div>
         ))}
@@ -27,17 +27,17 @@ export function ConditionsList({ conditions }: { conditions: ModelCondition[] })
       {!showAll && !expanded && remaining > 0 && (
         <button
           onClick={() => setExpanded(true)}
-          className="mt-3 inline-flex items-center gap-1 text-[var(--color-primary-dark)] font-medium hover:underline"
+          className="mt-3 inline-flex items-center gap-1 text-[13px] text-[var(--color-primary-dark)] font-semibold hover:underline"
         >
-          Show all {conditions.length} conditions <ChevronDown className="w-4 h-4" />
+          Show all {conditions.length} conditions <ChevronDown className="w-3.5 h-3.5" />
         </button>
       )}
       {!showAll && expanded && (
         <button
           onClick={() => setExpanded(false)}
-          className="mt-3 inline-flex items-center gap-1 text-[var(--color-primary-dark)] font-medium hover:underline"
+          className="mt-3 inline-flex items-center gap-1 text-[13px] text-[var(--color-primary-dark)] font-semibold hover:underline"
         >
-          Show fewer <ChevronDown className="w-4 h-4 rotate-180" />
+          Show fewer <ChevronDown className="w-3.5 h-3.5 rotate-180" />
         </button>
       )}
     </div>
