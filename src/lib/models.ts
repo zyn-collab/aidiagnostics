@@ -12,12 +12,15 @@ export interface ModelPerformance {
   dataset: string
 }
 
+export type InputIcon = 'ct' | 'xray' | 'mri' | 'mammogram' | 'fundus' | 'microscope' | 'any'
+
 export interface ModelInfo {
   slug: string
   name: string
   tagline: string
   tier: ModelTier
   tierLabel: string
+  inputIcons: InputIcon[]
   description: string
   longDescription: string
   whatItCanDetect: string
@@ -51,6 +54,7 @@ export const MODELS: ModelInfo[] = [
     tagline: 'One scan, hundreds of findings',
     tier: 'active',
     tierLabel: 'Analyze Now',
+    inputIcons: ['ct', 'mri'],
     description: 'Upload a single CT or MRI scan and get a comprehensive screening across 350+ possible conditions — the kinds of things a radiologist would look for, analyzed in about one minute.',
     longDescription: 'Pillar-0 is a general-purpose radiology AI that screens a single CT or MRI scan across more than 350 possible findings. It covers chest CT (lung nodules, pleural effusion, emphysema, lymphadenopathy, coronary calcification, and hundreds more), abdomen CT (liver lesions, kidney stones, gallstones, aneurysms, organ abnormalities), brain CT (hemorrhage, mass effect, midline shift, hydrocephalus, fractures), and breast MRI findings. Think of it as an AI radiologist that checks everything at once.',
     whatItCanDetect: 'Covers 350+ findings across chest, abdomen, brain, and breast imaging. Includes lung nodules, pleural effusion, emphysema, coronary calcification, liver lesions, kidney stones, gallstones, hemorrhage, fractures, and hundreds more.',
@@ -60,11 +64,44 @@ export const MODELS: ModelInfo[] = [
     acceptedExtensions: ['.dcm', '.nii', '.nii.gz', '.zip'],
     maxFileSizeMB: 500,
     conditions: [
-      { name: 'Lung nodules' }, { name: 'Pleural effusion' }, { name: 'Emphysema' },
-      { name: 'Lymphadenopathy' }, { name: 'Coronary calcification' }, { name: 'Liver lesions' },
-      { name: 'Kidney stones' }, { name: 'Gallstones' }, { name: 'Aneurysms' },
-      { name: 'Hemorrhage' }, { name: 'Mass effect' }, { name: 'Hydrocephalus' },
-      { name: 'Fractures' }, { name: '+ 337 more findings' },
+      // Chest CT
+      { name: 'Lung nodules', description: 'Small growths in the lung' },
+      { name: 'Pleural effusion', description: 'Fluid around the lungs' },
+      { name: 'Emphysema', description: 'Damaged air sacs in lungs' },
+      { name: 'Lymphadenopathy', description: 'Enlarged lymph nodes' },
+      { name: 'Coronary calcification', description: 'Calcium deposits in coronary arteries' },
+      { name: 'Atelectasis', description: 'Collapsed lung tissue' },
+      { name: 'Pulmonary embolism', description: 'Blood clot in lung arteries' },
+      { name: 'Pneumothorax', description: 'Air between lung and chest wall' },
+      { name: 'Consolidation', description: 'Lung tissue filled with fluid/pus' },
+      { name: 'Ground-glass opacity', description: 'Hazy lung areas' },
+      { name: 'Bronchiectasis', description: 'Widened airways' },
+      { name: 'Pericardial effusion', description: 'Fluid around the heart' },
+      { name: 'Aortic aneurysm', description: 'Bulging aorta' },
+      // Abdomen CT
+      { name: 'Liver lesions', description: 'Abnormal areas in liver' },
+      { name: 'Kidney stones', description: 'Calcifications in kidneys' },
+      { name: 'Gallstones', description: 'Stones in gallbladder' },
+      { name: 'Abdominal aortic aneurysm', description: 'Bulging abdominal aorta' },
+      { name: 'Splenomegaly', description: 'Enlarged spleen' },
+      { name: 'Hepatomegaly', description: 'Enlarged liver' },
+      { name: 'Pancreatic lesions', description: 'Abnormal areas in pancreas' },
+      { name: 'Adrenal abnormalities', description: 'Adrenal gland changes' },
+      { name: 'Hydronephrosis', description: 'Swollen kidney from urine buildup' },
+      { name: 'Bowel obstruction', description: 'Blocked intestine' },
+      // Brain CT
+      { name: 'Intracranial hemorrhage', description: 'Bleeding inside the skull' },
+      { name: 'Mass effect', description: 'Tissue displacement from lesion' },
+      { name: 'Midline shift', description: 'Brain pushed to one side' },
+      { name: 'Hydrocephalus', description: 'Excess fluid in brain' },
+      { name: 'Skull fractures', description: 'Broken skull bones' },
+      { name: 'Cerebral edema', description: 'Brain swelling' },
+      { name: 'Ischemic changes', description: 'Signs of reduced blood flow' },
+      // General
+      { name: 'Bone fractures', description: 'Broken bones' },
+      { name: 'Degenerative changes', description: 'Age-related wear' },
+      { name: 'Soft tissue abnormalities', description: 'Abnormal soft tissue findings' },
+      { name: '+ ~315 additional findings', description: 'Covering chest, abdomen, brain, breast, and musculoskeletal' },
     ],
     performance: [
       { metric: 'Accuracy', value: '87%', dataset: 'across 350+ findings' },
@@ -91,6 +128,7 @@ export const MODELS: ModelInfo[] = [
     tagline: 'Six-year lung cancer risk from one CT scan',
     tier: 'active',
     tierLabel: 'Analyze Now',
+    inputIcons: ['ct'],
     description: 'Upload a chest CT scan and get a personalized prediction of your risk of developing lung cancer over the next 1 to 6 years.',
     longDescription: 'Sybil looks at the entire chest CT scan — not just visible nodules — to find subtle patterns that predict future cancer development, sometimes years before it would be visible to a human eye. This is not detecting existing cancer — it is predicting the probability of cancer developing in the future, making it valuable for deciding how frequently someone should be screened.',
     whatItCanDetect: 'Future lung cancer risk over 1 to 6 years. This is not detecting existing cancer — it predicts the probability of cancer developing in the future.',
@@ -134,6 +172,7 @@ export const MODELS: ModelInfo[] = [
     tagline: 'Five-year breast cancer risk from a standard mammogram',
     tier: 'active',
     tierLabel: 'Analyze Now',
+    inputIcons: ['mammogram'],
     description: 'Upload a standard mammogram and get a personalized prediction of breast cancer risk over the next 1 to 5 years.',
     longDescription: 'Like Sybil for lung cancer, Mirai looks beyond what is currently visible in a mammogram to predict future risk. It does not detect existing tumors (that is what the radiologist reading the mammogram does), but predicts who is most likely to develop cancer in coming years. This is useful for deciding screening frequency and intensity.',
     whatItCanDetect: 'Future breast cancer risk over 1 to 5 years. Not detecting existing tumors — predicting who is most likely to develop cancer in coming years.',
@@ -175,6 +214,7 @@ export const MODELS: ModelInfo[] = [
     tagline: '14-condition screening from a single chest X-ray',
     tier: 'active',
     tierLabel: 'Analyze Now',
+    inputIcons: ['xray'],
     description: 'Upload a chest X-ray and get probability scores for 14 common conditions. This is the most accessible model — every clinic has an X-ray machine, and this runs instantly with no special hardware.',
     longDescription: 'CheXpert analyzes a single chest X-ray image and produces probability scores for 14 common chest conditions. This is the most accessible model on the platform — every clinic in the Maldives has an X-ray machine, and this model runs instantly with no GPU required. It is particularly useful as a second-opinion tool for GPs in atoll health centers without specialist radiologists.',
     whatItCanDetect: 'Atelectasis, cardiomegaly (enlarged heart), consolidation, edema, pleural effusion (fluid around lungs), pneumonia, pneumothorax (collapsed lung), lung opacity, lung lesion, fracture, enlarged cardiomediastinum, support devices, and more.',
@@ -225,6 +265,7 @@ export const MODELS: ModelInfo[] = [
     tagline: 'Diabetic eye disease screening from a fundus photo',
     tier: 'active',
     tierLabel: 'Analyze Now',
+    inputIcons: ['fundus'],
     description: 'Upload a photo of the back of the eye (retinal fundus photograph) and get an assessment of diabetic retinopathy severity. Early detection prevents blindness.',
     longDescription: 'This model grades diabetic retinopathy on a 5-point scale from a standard retinal fundus photograph. Early detection of diabetic retinopathy is critical because it is the leading cause of preventable blindness in working-age adults. This model helps screen patients who might not have access to an ophthalmologist — especially valuable in island health centers.',
     whatItCanDetect: 'Grades diabetic retinopathy severity: No DR (0), Mild (1), Moderate (2), Severe (3), Proliferative (4). Also flags whether the patient should be referred to a specialist.',
@@ -268,6 +309,7 @@ export const MODELS: ModelInfo[] = [
     tagline: 'Map every organ in a CT or MRI scan',
     tier: 'hospital',
     tierLabel: 'Hospital Integration',
+    inputIcons: ['ct', 'mri'],
     description: 'Automatically identifies and measures 100+ anatomical structures in a CT or MRI scan — every major organ, bone, vessel, and muscle.',
     longDescription: 'TotalSegmentator does not detect diseases directly — it maps anatomy. It identifies and measures all major organs (liver, spleen, kidneys, pancreas, heart chambers), the entire skeleton, major blood vessels (aorta, vena cava, portal vein), muscles, and more. Abnormal organ sizes or shapes can indicate disease. This is useful for surgical planning, measuring organ volumes, and spotting abnormalities.',
     whatItCanDetect: 'Does not detect diseases directly — maps anatomy. Identifies and measures 100+ structures: all major organs, the entire skeleton, major blood vessels, muscles, and more.',
@@ -309,6 +351,7 @@ export const MODELS: ModelInfo[] = [
     tagline: 'Point at anything in a medical image and the AI outlines it',
     tier: 'hospital',
     tierLabel: 'Hospital Integration',
+    inputIcons: ['any'],
     description: 'An interactive tool where a doctor loads any medical image, draws a box around a structure of interest, and the AI precisely outlines it in real time.',
     longDescription: 'MedSAM is an interactive segmentation tool. A doctor loads any medical image — CT slice, MRI slice, ultrasound, X-ray, pathology image — draws a bounding box around a structure of interest, and the AI precisely outlines it in real time. This back-and-forth interaction is the entire point of the tool. It is useful for measuring tumors, organs, lesions, or any visible structure.',
     whatItCanDetect: 'Does not detect conditions — it outlines and measures any structure a doctor points to. Works across CT, MRI, ultrasound, X-ray, and pathology images.',
@@ -350,6 +393,7 @@ export const MODELS: ModelInfo[] = [
     tagline: 'See your tumor\'s immune landscape from a standard biopsy slide',
     tier: 'coming_soon',
     tierLabel: 'Coming Soon',
+    inputIcons: ['microscope'],
     description: 'Takes a standard H&E-stained biopsy slide and predicts what an expensive multiplex immunofluorescence test would show — mapping 21 immune proteins.',
     longDescription: 'GigaTIME takes a standard H&E-stained biopsy slide (the $5 slide every cancer patient already has) and predicts what an expensive multiplex immunofluorescence test would show — mapping 21 immune proteins to reveal whether the immune system is actively fighting the tumor or ignoring it. This information is critical for deciding whether immunotherapy will work. The model is open-source and published in Cell, but requires a digitized whole-slide image from a slide scanner that costs $18,000-22,000. No hospital in the Maldives currently has one.',
     whatItCanDetect: 'Tumor microenvironment classification (immune-inflamed "hot" vs immune-desert "cold"), predicted expression of 21 protein markers including PD-L1, CD8, CD3, FoxP3, and other checkpoint and immune cell markers. Directly informs immunotherapy treatment decisions.',

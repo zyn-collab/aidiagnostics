@@ -8,7 +8,7 @@
   --color-primary: #2DD4A8;
   --color-primary-dark: #1FAF8A;
   --color-text: #1A1D23;
-  --color-text-secondary: #6B7280;
+  --color-text-secondary: #4B5563;
   --color-text-light: #FFFFFF;
   --color-bg: #FFFFFF;
   --color-bg-subtle: #F8F9FA;
@@ -24,10 +24,11 @@
 html { scroll-behavior: smooth; }
 body {
   font-family: var(--font-sans);
+  font-size: 17px;
   background: var(--color-bg);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
-  line-height: 1.7;
+  line-height: 1.65;
 }
 
 /* Scrollbars */
