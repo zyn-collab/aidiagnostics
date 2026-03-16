@@ -6,6 +6,16 @@ export interface ModelCondition {
   description?: string
 }
 
+export interface ConditionCategory {
+  category: string
+  conditions: string[]
+}
+
+// Models can use either a flat list or categorized list
+export type ConditionsData =
+  | { type: 'flat'; items: ModelCondition[] }
+  | { type: 'categorized'; categories: ConditionCategory[]; totalCount: number }
+
 export interface ModelPerformance {
   metric: string
   value: string
@@ -29,7 +39,7 @@ export interface ModelInfo {
   inputFormats: string[]
   acceptedExtensions: string[]
   maxFileSizeMB: number
-  conditions: ModelCondition[]
+  conditions: ConditionsData
   performance: ModelPerformance[]
   confidenceStatement: string
   outputDescription: string
@@ -63,46 +73,36 @@ export const MODELS: ModelInfo[] = [
     inputFormats: ['DICOM folder', 'NIfTI (.nii, .nii.gz)'],
     acceptedExtensions: ['.dcm', '.nii', '.nii.gz', '.zip'],
     maxFileSizeMB: 500,
-    conditions: [
-      // Chest CT
-      { name: 'Lung nodules', description: 'Small growths in the lung' },
-      { name: 'Pleural effusion', description: 'Fluid around the lungs' },
-      { name: 'Emphysema', description: 'Damaged air sacs in lungs' },
-      { name: 'Lymphadenopathy', description: 'Enlarged lymph nodes' },
-      { name: 'Coronary calcification', description: 'Calcium deposits in coronary arteries' },
-      { name: 'Atelectasis', description: 'Collapsed lung tissue' },
-      { name: 'Pulmonary embolism', description: 'Blood clot in lung arteries' },
-      { name: 'Pneumothorax', description: 'Air between lung and chest wall' },
-      { name: 'Consolidation', description: 'Lung tissue filled with fluid/pus' },
-      { name: 'Ground-glass opacity', description: 'Hazy lung areas' },
-      { name: 'Bronchiectasis', description: 'Widened airways' },
-      { name: 'Pericardial effusion', description: 'Fluid around the heart' },
-      { name: 'Aortic aneurysm', description: 'Bulging aorta' },
-      // Abdomen CT
-      { name: 'Liver lesions', description: 'Abnormal areas in liver' },
-      { name: 'Kidney stones', description: 'Calcifications in kidneys' },
-      { name: 'Gallstones', description: 'Stones in gallbladder' },
-      { name: 'Abdominal aortic aneurysm', description: 'Bulging abdominal aorta' },
-      { name: 'Splenomegaly', description: 'Enlarged spleen' },
-      { name: 'Hepatomegaly', description: 'Enlarged liver' },
-      { name: 'Pancreatic lesions', description: 'Abnormal areas in pancreas' },
-      { name: 'Adrenal abnormalities', description: 'Adrenal gland changes' },
-      { name: 'Hydronephrosis', description: 'Swollen kidney from urine buildup' },
-      { name: 'Bowel obstruction', description: 'Blocked intestine' },
-      // Brain CT
-      { name: 'Intracranial hemorrhage', description: 'Bleeding inside the skull' },
-      { name: 'Mass effect', description: 'Tissue displacement from lesion' },
-      { name: 'Midline shift', description: 'Brain pushed to one side' },
-      { name: 'Hydrocephalus', description: 'Excess fluid in brain' },
-      { name: 'Skull fractures', description: 'Broken skull bones' },
-      { name: 'Cerebral edema', description: 'Brain swelling' },
-      { name: 'Ischemic changes', description: 'Signs of reduced blood flow' },
-      // General
-      { name: 'Bone fractures', description: 'Broken bones' },
-      { name: 'Degenerative changes', description: 'Age-related wear' },
-      { name: 'Soft tissue abnormalities', description: 'Abnormal soft tissue findings' },
-      { name: '+ ~315 additional findings', description: 'Covering chest, abdomen, brain, breast, and musculoskeletal' },
-    ],
+    conditions: {
+      type: 'categorized',
+      totalCount: 366,
+      categories: [
+        { category: 'Abdomen — Pancreas', conditions: ['Pancreatic atrophy', 'Chronic pancreatitis', 'Acute pancreatitis', 'Necrotizing pancreatitis', 'Autoimmune pancreatitis', 'Groove pancreatitis', 'Pancreatic pseudocysts', 'Pancreatic tumors', 'IPMN', 'IPMN with worrisome features', 'Serous cystic neoplasms', 'Mucinous cystic neoplasms', 'Solid pseudopapillary tumors', 'Ductal pancreatic carcinomas', 'Neuroendocrine tumors', 'Main pancreatic duct dilatation', 'Annular pancreas', 'Cystic fibrosis (pancreatic)'] },
+        { category: 'Abdomen — Liver', conditions: ['Hepatomegaly', 'Hepatic steatosis / fatty liver', 'Cirrhosis', 'Cirrhosis with portal hypertension', 'Cirrhosis with decompensation', 'Esophageal or gastric varices', 'Hepatic regenerative nodules', 'Dysplastic nodules', 'Polycystic liver disease', 'Viral hepatitis', 'Hepatic abscesses', 'Hemochromatosis', 'Hepatic cysts', 'Hepatic hemangiomas', 'Focal nodular hyperplasia', 'Hepatic adenomas', 'Hepatic masses', 'Hepatocellular carcinoma', 'Hepatoblastoma', 'Cholangiocarcinoma', 'Hepatic metastases', 'Hepatic lymphoma', 'Angiosarcoma', 'Epithelioid hemangioendothelioma', 'Fibrolamellar carcinoma', 'Liver lacerations', 'Active extravasation', 'Hepatic infarcts', 'Post-resection changes', 'Post-transplantation changes', 'Portal venous occlusion', 'Portal venous gas'] },
+        { category: 'Abdomen — Gallbladder & Biliary', conditions: ['Gallstones / cholelithiasis', 'Post-cholecystectomy', 'Choledochal cysts', 'Acute cholecystitis', 'Cholecystitis with rupture', 'Emphysematous cholecystitis', 'Porcelain gallbladder', 'Pneumobilia', 'Gallbladder wall thickening', 'Adenomyomatosis', 'Gallbladder polyps', 'Gallbladder cancer', 'Intrahepatic biliary ductal dilation', 'Extrahepatic biliary ductal dilation', 'Intra-hepatic stones', 'Ascending cholangitis', 'Primary sclerosing cholangitis', 'Cholangiocarcinoma', 'Biliary cystadenomas', 'Biliary hamartomas'] },
+        { category: 'Abdomen — Spleen', conditions: ['Splenomegaly', 'Epithelial cysts', 'Splenic pseudocysts', 'Splenic hamartomas', 'Splenic lymphoma', 'Splenic abscesses', 'Splenic lacerations', 'Splenic infarcts', 'Post-splenectomy changes', 'Accessory spleens'] },
+        { category: 'Abdomen — Genitourinary', conditions: ['Hydronephrosis', 'Renal hypodensities', 'Simple renal cysts', 'Complex renal cysts', 'Nephritis', 'Renal abscesses', 'Xanthogranulomatous pyelonephritis', 'Nephrolithiasis', 'Ureteral stones', 'Bladder stones', 'Nephrocalcinosis', 'Polycystic kidney disease', 'Horseshoe kidney', 'Ureteroceles', 'Urachal diverticula', 'Renal cell carcinoma', 'Oncocytomas', 'Renal lymphoma', 'Wilms tumors', 'Angiomyolipomas', 'Bladder transitional cell carcinoma', 'Post-nephrectomy changes', 'Post-renal transplant changes', 'Subcapsular hemorrhages', 'Renal lacerations', 'Renal infarcts', 'Bladder rupture'] },
+        { category: 'Abdomen — GI Tract', conditions: ['Appendicitis', 'Enterocolitis / gastritis', 'Bowel obstruction', 'Small bowel obstruction', 'Large bowel obstruction', 'Ileus', 'Volvulus', 'Intussusception', 'Hiatal hernia', 'Pneumatosis intestinalis', 'Inflammatory bowel disease', 'Pseudomembranous colitis', 'Diverticulitis', 'Achalasia', 'Enteric diverticula', 'Gastric volvulus', 'Inguinal hernias', 'Ventral / Spigelian hernias', 'Post-bariatric surgery', 'Surgical gastric conduit', 'Gastric foreign bodies', 'Postoperative leakage / fistula', 'Gastric carcinoma', 'Esophageal carcinoma', 'Duodenal carcinoma', 'Colonic carcinoma', 'Rectal carcinoma', 'GISTs', 'GI lymphoma'] },
+        { category: 'Abdomen — Adrenal', conditions: ['Adrenal masses', 'Adrenal adenomas', 'Pheochromocytomas', 'Adrenal myelolipomas', 'Adrenal hyperplasia', 'Adrenal hemorrhages', 'Adrenal infarcts'] },
+        { category: 'Abdomen — Peritoneum & Vessels', conditions: ['Ascites', 'Pneumoperitoneum', 'Pseudomyxoma peritonei', 'Peritoneal carcinomatosis', 'Mesenteric carcinoid', 'Abdominal aortic aneurysm', 'Arterial / aortic thrombosis', 'Aortic atherosclerosis', 'Aortic dissection', 'Deep venous thromboses', 'Retroperitoneal fibrosis', 'Retroperitoneal hemorrhage', 'Metastatic disease', 'Anasarca'] },
+        { category: 'Abdomen — Male Pelvis', conditions: ['Prostatomegaly', 'Prostatitis', 'Prostate cancer', 'Testicular torsion', 'Testicular masses', 'Testicular infarct', 'Scrotal hematomas', 'Epididymitis', 'Hydroceles', 'Varicoceles'] },
+        { category: 'Abdomen — Female Pelvis', conditions: ['Uterine fibroids', 'Leiomyosarcomas', 'Adenomyosis', 'Endometrial thickening', 'Endometrial polyps', 'Uterine malformations', 'Post-hysterectomy changes', 'Cervical masses', 'Nabothian cysts', 'Adenoma malignum', 'Ovarian tumors', 'Endometriomas', 'Ovarian cancers', 'Adnexal torsion', 'Ovarian teratomas', 'PCOS', 'Deep infiltrative endometriosis', 'Pelvic inflammatory disease', 'Bartholin gland cysts', 'Vaginal / vulvar cancers'] },
+        { category: 'Chest — Heart', conditions: ['Coronary atherosclerosis', 'Coronary artery stents', 'Post-CABG', 'Cardiomegaly', 'Dilated cardiomyopathy', 'Hypertrophic cardiomyopathy', 'Ischemic cardiomyopathy', 'Pulmonary hypertension', 'Pericardial effusion', 'Cardiac tamponade', 'Valve calcifications', 'Coronary soft plaques', 'Single coronary artery', 'Myxomas', 'Aortic dissection'] },
+        { category: 'Chest — Lungs', conditions: ['Atelectasis', 'Consolidation', 'Centrilobular emphysema', 'Paraseptal emphysema', 'Cavitation', 'Bulla / bleb / pneumatocele', 'Atypical lung cyst', 'Post-lung resection scar', 'Lung calcification', 'Pneumoconiosis', 'Ground-glass opacity', 'Pulmonary edema', 'Primary tuberculosis', 'Miliary tuberculosis', 'Non-tuberculous mycobacterial infection', 'COVID-19', 'Aspergillosis', 'Aspiration pneumonia', 'Crazy paving pattern', 'Sarcoidosis', 'Radiation pneumonitis'] },
+        { category: 'Chest — Lung Nodules', conditions: ['Solid nodules', 'Lung mass', 'Part-solid nodules', 'Ground-glass nodules'] },
+        { category: 'Chest — Airways', conditions: ['Bronchiectasis', 'Peribronchial thickening', 'Mucous plugging', 'Tree-in-bud / focal bronchiolitis', 'Panbronchiolitis', 'Tracheal masses'] },
+        { category: 'Chest — Interstitial Lung Disease', conditions: ['Reticulation / reticular pattern', 'Mosaic attenuation', 'Honeycombing', 'Interlobular septal thickening'] },
+        { category: 'Chest — Pleura & Mediastinum', conditions: ['Pleural effusion', 'Pleural thickening', 'Hemothorax', 'Pneumothorax', 'Pleural plaques', 'Empyema', 'Mediastinal mass', 'Teratoma', 'Thymoma', 'Mediastinal lymphadenopathy', 'Hiatal hernia', 'Pneumomediastinum'] },
+        { category: 'Chest — Vessels & Bones', conditions: ['Aortic aneurysm', 'Aberrant subclavian artery', 'Aortic atherosclerosis', 'Pulmonary embolism', 'Rib / clavicle fractures', 'Spine fractures', 'Osteopenia', 'Arthritis', 'Sternotomy', 'Osteolytic lesions', 'Osteosclerotic lesions'] },
+        { category: 'Head — Hemorrhage & Stroke', conditions: ['Intracranial hemorrhage', 'Intraparenchymal hemorrhage', 'Intraventricular hemorrhage', 'Subarachnoid hemorrhage', 'Subdural hemorrhage', 'Epidural hemorrhage', 'Loss of gray-white junction', 'Acute infarct', 'Chronic infarct', 'Hemorrhagic transformation'] },
+        { category: 'Head — Structure & Mass', conditions: ['Hydrocephalus', 'Cerebral edema', 'Brain atrophy', 'Midline shift', 'Cerebral herniation', 'Subfalcine herniation', 'Transtentorial herniation', 'Mass effect', 'Brain tumors', 'Intracranial metastasis', 'Meningioma'] },
+        { category: 'Head — Post-Treatment & MSK', conditions: ['Post-craniotomy changes', 'Post-craniectomy changes', 'Post-radiotherapy changes', 'EVD device', 'Deep brain stimulation device', 'Skull fractures', 'Osteolytic lesions', 'Osteosclerotic lesions'] },
+        { category: 'Breast MRI — Mass & Features', conditions: ['Breast masses', 'Foci of enhancement', 'Carcinoma', 'Fibroadenoma', 'Lipoma', 'Fat necrosis / oil cyst', 'Oval shape mass', 'Round shape mass', 'Irregular shape mass', 'Circumscribed margin', 'Spiculated margin', 'Irregular margin'] },
+        { category: 'Breast MRI — Staging & NME', conditions: ['Axillary lymphadenopathy', 'Internal mammary lymphadenopathy', 'Skin invasion', 'Pectoralis invasion', 'Chest wall invasion', 'Skin retraction', 'Skin thickening', 'Nipple retraction', "Paget's disease", 'Non-mass enhancement', 'Focal NME', 'Linear NME', 'Segmental NME', 'Regional NME', 'Diffuse NME'] },
+        { category: 'Breast MRI — Surgery & Benign', conditions: ['Post-lumpectomy changes', 'Mastectomy changes', 'Post-operative hematoma / seroma', 'Galactoceles', 'Breast cysts', 'Breast abscess', 'Mastitis', 'Biopsy clips', 'Intracapsular implant rupture', 'Extracapsular implant rupture', 'BIA-ALCL'] },
+        { category: 'Devices (cross-region)', conditions: ['Nasogastric tubes', 'Gastrostomy tubes', 'Drainage catheters', 'Biliary stents', 'TIPS', 'Foley catheters', 'Nephrostomy tubes', 'Ureteral stents', 'IUDs', 'ECMO devices', 'Central venous catheters', 'Aortic stents', 'Heart valve replacement', 'Pacemakers / defibrillators', 'Endotracheal tube', 'Chest tubes'] },
+      ],
+    },
     performance: [
       { metric: 'Accuracy', value: '87%', dataset: 'across 350+ findings' },
     ],
@@ -137,14 +137,14 @@ export const MODELS: ModelInfo[] = [
     inputFormats: ['DICOM folder'],
     acceptedExtensions: ['.dcm', '.zip'],
     maxFileSizeMB: 500,
-    conditions: [
+    conditions: { type: 'flat', items: [
       { name: 'Lung cancer risk (1-year)' },
       { name: 'Lung cancer risk (2-year)' },
       { name: 'Lung cancer risk (3-year)' },
       { name: 'Lung cancer risk (4-year)' },
       { name: 'Lung cancer risk (5-year)' },
       { name: 'Lung cancer risk (6-year)' },
-    ],
+    ] },
     performance: [
       { metric: 'AUC', value: '92%', dataset: '1-year lung cancer prediction' },
       { metric: 'Validated on', value: '27,000+', dataset: 'CT scans across 3 hospitals' },
@@ -181,13 +181,13 @@ export const MODELS: ModelInfo[] = [
     inputFormats: ['DICOM files (4 views required)'],
     acceptedExtensions: ['.dcm', '.zip'],
     maxFileSizeMB: 200,
-    conditions: [
+    conditions: { type: 'flat', items: [
       { name: 'Breast cancer risk (1-year)' },
       { name: 'Breast cancer risk (2-year)' },
       { name: 'Breast cancer risk (3-year)' },
       { name: 'Breast cancer risk (4-year)' },
       { name: 'Breast cancer risk (5-year)' },
-    ],
+    ] },
     performance: [
       { metric: 'Validated on', value: '2M+', dataset: 'mammograms across 72 hospitals in 22 countries' },
     ],
@@ -223,7 +223,7 @@ export const MODELS: ModelInfo[] = [
     inputFormats: ['PNG', 'JPEG', 'DICOM'],
     acceptedExtensions: ['.png', '.jpg', '.jpeg', '.dcm'],
     maxFileSizeMB: 20,
-    conditions: [
+    conditions: { type: 'flat', items: [
       { name: 'Atelectasis', description: 'Collapsed or partially collapsed lung' },
       { name: 'Cardiomegaly', description: 'Enlarged heart' },
       { name: 'Consolidation', description: 'Lung tissue filled with fluid' },
@@ -238,7 +238,7 @@ export const MODELS: ModelInfo[] = [
       { name: 'Support Devices', description: 'Medical devices detected' },
       { name: 'No Finding', description: 'No abnormality detected' },
       { name: 'Pleural Other', description: 'Other pleural abnormality' },
-    ],
+    ] },
     performance: [
       { metric: 'AUC', value: '0.90+', dataset: 'for major findings (effusion, cardiomegaly)' },
       { metric: 'Trained on', value: '224,000+', dataset: 'chest X-rays from Stanford' },
@@ -274,13 +274,13 @@ export const MODELS: ModelInfo[] = [
     inputFormats: ['PNG', 'JPEG'],
     acceptedExtensions: ['.png', '.jpg', '.jpeg'],
     maxFileSizeMB: 20,
-    conditions: [
+    conditions: { type: 'flat', items: [
       { name: 'No DR (Grade 0)', description: 'No diabetic retinopathy detected' },
       { name: 'Mild (Grade 1)', description: 'Mild nonproliferative DR' },
       { name: 'Moderate (Grade 2)', description: 'Moderate nonproliferative DR' },
       { name: 'Severe (Grade 3)', description: 'Severe nonproliferative DR' },
       { name: 'Proliferative (Grade 4)', description: 'Proliferative DR — requires urgent referral' },
-    ],
+    ] },
     performance: [
       { metric: 'Accuracy', value: '97%+', dataset: 'for detecting referable DR (moderate or worse)' },
       { metric: 'Validated on', value: '88,000', dataset: 'images from EyePACS dataset' },
@@ -318,12 +318,12 @@ export const MODELS: ModelInfo[] = [
     inputFormats: ['DICOM', 'NIfTI'],
     acceptedExtensions: ['.dcm', '.nii', '.nii.gz'],
     maxFileSizeMB: 500,
-    conditions: [
+    conditions: { type: 'flat', items: [
       { name: 'Organ identification', description: 'All major organs individually labeled' },
       { name: 'Organ volumetry', description: 'Precise volume measurements' },
       { name: 'Skeletal mapping', description: 'Full skeleton segmentation' },
       { name: 'Vascular mapping', description: 'Major blood vessels identified' },
-    ],
+    ] },
     performance: [
       { metric: 'Accuracy', value: '94%', dataset: 'on CT across all structures' },
       { metric: 'Accuracy', value: '84%', dataset: 'on MRI across all structures' },
@@ -360,10 +360,10 @@ export const MODELS: ModelInfo[] = [
     inputFormats: ['PNG', 'JPEG', 'DICOM', 'NIfTI'],
     acceptedExtensions: ['.png', '.jpg', '.jpeg', '.dcm', '.nii'],
     maxFileSizeMB: 50,
-    conditions: [
+    conditions: { type: 'flat', items: [
       { name: 'Interactive segmentation', description: 'Real-time structure outlining' },
       { name: 'Structure measurement', description: 'Area and volume calculations' },
-    ],
+    ] },
     performance: [
       { metric: 'Dice score', value: '0.85+', dataset: 'for well-defined structures' },
       { metric: 'Validated on', value: '1.5M', dataset: 'image-mask pairs across 11 imaging types' },
@@ -402,7 +402,7 @@ export const MODELS: ModelInfo[] = [
     inputFormats: ['Whole-slide image (SVS, TIFF)'],
     acceptedExtensions: ['.svs', '.tiff', '.tif'],
     maxFileSizeMB: 5000,
-    conditions: [
+    conditions: { type: 'flat', items: [
       { name: 'Immune-inflamed ("hot") tumor' },
       { name: 'Immune-desert ("cold") tumor' },
       { name: 'PD-L1 expression prediction' },
@@ -410,7 +410,7 @@ export const MODELS: ModelInfo[] = [
       { name: 'CD3 expression' },
       { name: 'FoxP3 regulatory T-cells' },
       { name: '+ 15 more immune markers' },
-    ],
+    ] },
     performance: [
       { metric: 'Concordance', value: '0.88', dataset: 'with actual multiplex immunofluorescence' },
       { metric: 'Validated on', value: '14,256', dataset: 'patients across 51 hospitals' },

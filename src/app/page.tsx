@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { Disclaimer } from '@/components/common/Disclaimer'
 import { InputIconGroup } from '@/components/models/InputIcons'
+import { ModelTable } from '@/components/models/ModelTable'
 import { getActiveModels, getHospitalModels, getComingSoonModels } from '@/lib/models'
-import { ArrowRight } from 'lucide-react'
 
 export default function HomePage() {
   const activeModels = getActiveModels()
@@ -31,52 +31,10 @@ export default function HomePage() {
       <section className="py-7">
         <h2 className="text-[18px] font-bold text-[var(--color-text)] mb-1.5">Available for analysis</h2>
         <p className="text-[13px] text-[var(--color-text-secondary)] mb-5">
-          Upload a file and receive results by email. CPU models run instantly with no limits. GPU models have daily capacity limits.
+          Click any row to see what it screens for, input specs, and accuracy. CPU models run instantly with no limits. GPU models have daily capacity limits.
         </p>
 
-        <div className="overflow-x-auto -mx-6 px-6">
-          <table className="w-full text-left text-[14px]">
-            <thead>
-              <tr className="border-b-2 border-[var(--color-border)]">
-                <th className="py-2 pr-4 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">Model</th>
-                <th className="py-2 pr-4 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">Input</th>
-                <th className="py-2 pr-4 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-text-secondary)] hidden md:table-cell">Description</th>
-                <th className="py-2 pr-4 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">Speed</th>
-                <th className="py-2 text-[11px]"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {activeModels.map((model) => (
-                <tr key={model.slug} className="border-b border-[var(--color-border)]/60 hover:bg-[var(--color-bg-subtle)] transition-colors">
-                  <td className="py-3 pr-4">
-                    <Link href={`/models/${model.slug}`} className="font-semibold text-[var(--color-text)] hover:text-[var(--color-primary-dark)]">
-                      {model.name}
-                    </Link>
-                  </td>
-                  <td className="py-3 pr-4">
-                    <InputIconGroup icons={model.inputIcons} />
-                  </td>
-                  <td className="py-3 pr-4 text-[var(--color-text-secondary)] hidden md:table-cell">
-                    {model.tagline}
-                  </td>
-                  <td className="py-3 pr-4 text-[13px]">
-                    <span className={model.computeType === 'cpu' ? 'text-[var(--color-primary-dark)] font-medium' : 'text-[var(--color-text-secondary)]'}>
-                      {model.computeType === 'cpu' ? 'Instant' : model.estimatedTime}
-                    </span>
-                  </td>
-                  <td className="py-3">
-                    <Link
-                      href={`/analyze/${model.slug}`}
-                      className="inline-flex items-center gap-1 text-[13px] font-semibold text-[var(--color-primary-dark)] hover:underline whitespace-nowrap"
-                    >
-                      Analyze <ArrowRight className="w-3 h-3" />
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <ModelTable models={activeModels} />
       </section>
 
       <hr className="border-[var(--color-border)]" />
@@ -169,7 +127,7 @@ export default function HomePage() {
             The AI models on this platform are not large language models. They are specialized machine learning algorithms, each trained on hundreds of thousands to millions of real medical images for a specific diagnostic task. They output quantitative scores (probabilities, risk percentages, severity grades), not generated text. They have been validated in peer-reviewed clinical studies published in <em>Cell</em>, <em>Nature Communications</em>, the <em>Journal of Clinical Oncology</em>, <em>Science Translational Medicine</em>, <em>JAMA</em>, and <em>Radiology: AI</em>.
           </p>
           <p>
-            All models are open-source. This platform demonstrates what Maldivian hospitals can do with equipment they already own. The long-term goal is for hospitals to run these models directly on their own infrastructure.
+            All models are open-source. This platform demonstrates what Maldivian hospitals can do with equipment they already own. The long-term goal is for hospitals to run these models directly on their own infrastructure. We will continue adding new models as validated, peer-reviewed algorithms become available.
           </p>
         </div>
       </section>
@@ -179,11 +137,9 @@ export default function HomePage() {
       {/* ── Compute ──────────────────────────── */}
       <section className="py-7">
         <h2 className="text-[18px] font-bold text-[var(--color-text)] mb-4">Compute</h2>
-        <div className="text-[var(--color-text-secondary)] leading-relaxed space-y-3">
-          <p>
-            Policy Lab covers all model computation costs as a public service. CPU models (CheXpert, DR Screening) run instantly with no usage limits. GPU models (Pillar-0, Sybil, Mirai) have daily capacity limits due to processing costs. If capacity is reached, your analysis will be queued and you will be notified by email when results are ready.
-          </p>
-        </div>
+        <p className="text-[var(--color-text-secondary)] leading-relaxed">
+          Policy Lab covers all model computation costs as a public service. CPU models (CheXpert, DR Screening) run instantly with no usage limits. GPU models (Pillar-0, Sybil, Mirai) have daily capacity limits due to processing costs. If capacity is reached, your analysis will be queued and you will be notified by email when results are ready.
+        </p>
       </section>
 
       <hr className="border-[var(--color-border)]" />
